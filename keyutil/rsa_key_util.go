@@ -32,3 +32,23 @@ func ParseRSAPrivateKeyPEM(pem []byte) (key *rsa.PrivateKey, err error) {
 	}
 	return
 }
+
+func EncodeRSAPrivateKeyPKCS1PEM(key *rsa.PrivateKey) []byte {
+	return _pem.EncodeToMemory(&_pem.Block{
+		Type:  "RSA PRIVATE KEY",
+		Bytes: x509.MarshalPKCS1PrivateKey(key),
+	})
+}
+
+func EncodePrivateKeyPKCS8PEM(key any) (pem []byte, err error) {
+	der, err := x509.MarshalPKCS8PrivateKey(key)
+	if err != nil {
+		err = fmt.Errorf("[keyutil.EncodePrivateKeyPKCS8PEM] x509.MarshalPKCS8PrivateKey: %w", err)
+		return
+	}
+	pem = _pem.EncodeToMemory(&_pem.Block{
+		Type:  "PRIVATE KEY",
+		Bytes: der,
+	})
+	return
+}

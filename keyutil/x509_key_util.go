@@ -21,3 +21,10 @@ func ParseX509CertificatePEM(pem []byte) (cert *x509.Certificate, err error) {
 	}
 	return
 }
+
+func EncodeX509CertificatePEM(cert *x509.Certificate) []byte {
+	return _pem.EncodeToMemory(&_pem.Block{
+		Type:  "CERTIFICATE",
+		Bytes: cert.Raw,
+	})
+}
