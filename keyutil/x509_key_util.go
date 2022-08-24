@@ -22,6 +22,18 @@ func ParseX509CertificatePEM(pem []byte) (cert *x509.Certificate, err error) {
 	return
 }
 
+func ParseX509CertificateAuto(certBytes []byte) (cert *x509.Certificate, err error) {
+	block, _ := _pem.Decode(certBytes)
+	if block != nil && block.Type == "CERTIFICATE" {
+		certBytes = block.Bytes
+	}
+	if cert, err = x509.ParseCertificate(certBytes); err != nil {
+		err = fmt.Errorf("[crypto/keyutil.ParseX509CertificateAuto] cannot detect input certificate format: %w", ErrInvalidFormat)
+		return
+	}
+	return
+}
+
 func EncodeX509CertificatePEM(cert *x509.Certificate) []byte {
 	return _pem.EncodeToMemory(&_pem.Block{
 		Type:  "CERTIFICATE",
