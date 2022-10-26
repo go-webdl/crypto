@@ -7,11 +7,12 @@ import (
 	"encoding/base64"
 	"encoding/hex"
 	"fmt"
-	"github.com/go-webdl/crypto/pkcs7"
-	"github.com/go-webdl/crypto/sha256"
 	"math/rand"
 	"regexp"
 	"testing"
+
+	"github.com/go-webdl/crypto/pkcs7"
+	"github.com/go-webdl/crypto/sha256"
 )
 
 func h2b(h string) []byte {
@@ -25,10 +26,10 @@ func testPointMapping(t *testing.T, p, P []byte) {
 		t.Errorf("P256PointMapping returned nil")
 		return
 	}
-	if bytes.Compare(x.Bytes(), P[0:32]) != 0 {
+	if !bytes.Equal(x.Bytes(), P[0:32]) {
 		t.Errorf("Expecting mapped X point to be\n%s\nbut got\n%s", hex.Dump(P[0:32]), hex.Dump(x.Bytes()))
 	}
-	if bytes.Compare(y.Bytes(), P[32:64]) != 0 {
+	if !bytes.Equal(y.Bytes(), P[32:64]) {
 		t.Errorf("Expecting mapped Y point to be\n%s\nbut got\n%s", hex.Dump(P[32:64]), hex.Dump(y.Bytes()))
 	}
 }
@@ -59,17 +60,17 @@ func testEncrypt(t *testing.T, pubkey *Key, p, r, C, D []byte) {
 		return
 	}
 
-	if bytes.Compare(ciphertext[0:32], C[0:32]) != 0 {
+	if !bytes.Equal(ciphertext[0:32], C[0:32]) {
 		t.Errorf("Expecting C x point to be\n%s\nbut got\n%s", hex.Dump(C[0:32]), hex.Dump(ciphertext[0:32]))
 	}
-	if bytes.Compare(ciphertext[32:64], C[32:64]) != 0 {
+	if !bytes.Equal(ciphertext[32:64], C[32:64]) {
 		t.Errorf("Expecting C y point to be\n%s\nbut got\n%s", hex.Dump(C[32:64]), hex.Dump(ciphertext[32:64]))
 	}
 
-	if bytes.Compare(ciphertext[64:96], D[0:32]) != 0 {
+	if !bytes.Equal(ciphertext[64:96], D[0:32]) {
 		t.Errorf("Expecting D x point to be\n%s\nbut got\n%s", hex.Dump(D[0:32]), hex.Dump(ciphertext[64:96]))
 	}
-	if bytes.Compare(ciphertext[96:128], D[32:64]) != 0 {
+	if !bytes.Equal(ciphertext[96:128], D[32:64]) {
 		t.Errorf("Expecting D y point to be\n%s\nbut got\n%s", hex.Dump(D[32:64]), hex.Dump(ciphertext[96:128]))
 	}
 }
@@ -85,17 +86,17 @@ func testDecrypt(t *testing.T, priv *Key, p, r, C, D []byte) {
 		return
 	}
 
-	if bytes.Compare(plaintext, p) != 0 {
+	if !bytes.Equal(plaintext, p) {
 		t.Errorf("Expecting plaintext to be\n%s\nbut got\n%s", hex.Dump(p), hex.Dump(plaintext))
 	}
 }
 
 func testEncryptDecrypt(t *testing.T, k, K, p, r, C, D []byte) {
 	priv := PrivKey(k)
-	if bytes.Compare(priv.X.Bytes(), K[0:32]) != 0 {
+	if !bytes.Equal(priv.X.Bytes(), K[0:32]) {
 		t.Errorf("Expecting public key X point to be\n%s\nbut got\n%s", hex.Dump(K[0:32]), hex.Dump(priv.X.Bytes()))
 	}
-	if bytes.Compare(priv.Y.Bytes(), K[32:64]) != 0 {
+	if !bytes.Equal(priv.Y.Bytes(), K[32:64]) {
 		t.Errorf("Expecting public key Y point to be\n%s\nbut got\n%s", hex.Dump(K[32:64]), hex.Dump(priv.Y.Bytes()))
 	}
 	testEncrypt(t, priv, p, r, C, D)
@@ -139,7 +140,7 @@ func TestP256EncryptDecrypt(t *testing.T) {
 
 func testSign(t *testing.T, priv *Key, m, r, s []byte) {
 	sig := priv.Sign(m, bytes.NewReader(r))
-	if bytes.Compare(sig, s) != 0 {
+	if !bytes.Equal(sig, s) {
 		t.Errorf("Expecting signature to be\n%s\nbut got\n%s", hex.Dump(s), hex.Dump(sig))
 	}
 }

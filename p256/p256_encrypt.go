@@ -46,6 +46,7 @@ func (priv *Key) Decrypt(ciphertext []byte) []byte {
 
 	// Invert k * C => - k * C
 	kCy.Neg(kCy)
+	kCy.Mod(kCy, Curve.Params().P)
 
 	px, _ := Curve.Add(Dx, Dy, kCx, kCy)
 	return px.Bytes()
