@@ -67,7 +67,7 @@ func KeySchedule(key []byte, xk []byte) {
 	for i = nk; i < nw; i++ {
 		t := binary.LittleEndian.Uint32(xk[4*(i-1):])
 		if i%nk == 0 {
-			t = Subw(Rotw(t)) ^ uint32(rcon[i/nk-1])
+			t = Subw(Rotw(t)) ^ uint32(rcon[i/nk])
 		} else if nk > 6 && i%nk == 4 {
 			t = Subw(t)
 		}
